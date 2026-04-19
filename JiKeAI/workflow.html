@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>集客AI - AI工作流</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body data-page="workflow" class="chat-app-page workflow-chat-page">
+  <header class="sub-header glass-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">JK</div>
+        <div class="brand-text">
+          <strong>集客AI</strong>
+          <span>Every Marketer's AI</span>
+        </div>
+      </a>
+      <nav class="nav dark-nav">
+        <a data-nav="home" href="index.html">首页</a>
+        <a data-nav="workflow" href="workflow.html">AI工作流</a>
+        <a data-nav="video" href="video.html">AI视频</a>
+        <a data-nav="modeling" href="modeling.html">AI对话</a>
+        <a data-nav="enterprise" href="enterprise.html">企业定制</a>
+        <a data-nav="contact" href="contact.html">联系我们</a>
+      </nav>
+      <div class="nav-right">
+        <div class="pill"><span class="coin-dot">◉</span> 161 <strong>| VIP</strong></div>
+        <div class="pill">wx133467...</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="chat-app-shell workflow-shell">
+    <aside class="chat-sidebar workflow-sidebar">
+      <div class="chat-sidebar__top">
+        <a class="brand brand-compact" href="index.html">
+          <div class="brand-mark">JI</div>
+          <div class="brand-text">
+            <strong>Jike AI</strong>
+            <span>Every Marketer's AI</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="workflow-category-list" role="tablist" aria-label="工作流分类">
+        <button class="workflow-category-card is-active" type="button" data-workflow-name="室内设计" data-workflow-placeholder="请输入你的室内设计需求，例如：帮我生成现代轻奢客厅方案，包含材质、灯光和软装建议。">
+          <strong>室内设计</strong>
+        </button>
+        <button class="workflow-category-card" type="button" data-workflow-name="建筑设计" data-workflow-placeholder="请输入你的建筑设计需求，例如：为商业综合体设计入口立面和空间概念方案。">
+          <strong>建筑设计</strong>
+        </button>
+        <button class="workflow-category-card" type="button" data-workflow-name="产品设计" data-workflow-placeholder="请输入你的产品设计需求，例如：帮我梳理智能家居产品的外观方向和交互卖点。">
+          <strong>产品设计</strong>
+        </button>
+        <button class="workflow-category-card" type="button" data-workflow-name="视觉传达" data-workflow-placeholder="请输入你的视觉传达需求，例如：生成品牌发布会主视觉延展思路。">
+          <strong>视觉传达</strong>
+        </button>
+        <button class="workflow-category-card" type="button" data-workflow-name="数字媒体" data-workflow-placeholder="请输入你的数字媒体需求，例如：策划一套短视频栏目包装与内容分发方案。">
+          <strong>数字媒体</strong>
+        </button>
+        <button class="workflow-category-card" type="button" data-workflow-name="企业运营模拟系统" data-workflow-mode="enterprise" data-workflow-placeholder="请输入你的企业运营模拟需求，例如：设计一套企业经营沙盘训练任务流程。">
+          <strong>企业运营模拟系统</strong>
+        </button>
+      </div>
+    </aside>
+
+    <section class="chat-main workflow-main">
+      <div class="chat-main__top workflow-main__top" data-workflow-top>
+        <div>
+          <div class="chat-main__kicker">AI工作流</div>
+          <h1 class="chat-main__title" data-workflow-title><span data-workflow-display>室内设计</span> 对话</h1>
+        </div>
+        <div class="chat-status" data-workflow-status><span class="chat-status__dot"></span><span data-workflow-status-text>AI 对话模块已就绪</span></div>
+      </div>
+
+      <div class="workflow-chat-layout" data-workflow-chat-shell>
+        <div class="chat-thread workflow-thread" data-chat-thread></div>
+ 
+        <div class="chat-composer-wrap">
+          <div class="chat-composer">
+            <textarea class="chat-composer__input" data-chat-composer data-workflow-composer placeholder="请输入你的室内设计需求，例如：帮我生成现代轻奢客厅方案，包含材质、灯光和软装建议。"></textarea>
+            <div class="chat-composer__bottom">
+              <div class="chat-composer__actions">
+                <div class="control control-select composer-select">
+                  <button class="model-trigger" type="button" data-dropdown-trigger aria-haspopup="listbox" aria-expanded="false">
+                    <span data-dropdown-value>DeepSeek</span>
+                  </button>
+                  <div class="model-menu" data-dropdown-menu hidden role="listbox" aria-label="选择模型">
+                    <button class="model-option is-selected" type="button" data-model-option="DeepSeek" role="option" aria-selected="true">DeepSeek</button>
+                    <button class="model-option" type="button" data-model-option="豆包" role="option" aria-selected="false">豆包</button>
+                    <button class="model-option" type="button" data-model-option="文心一言" role="option" aria-selected="false">文心一言</button>
+                  </div>
+                </div>
+                <button class="send-btn" type="button" data-chat-send>发送</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="workflow-enterprise" data-enterprise-workspace hidden></section>
+    </section>
+  </main>
+  <script src="assets/common.js"></script>
+  <script src="assets/workflow-enterprise.js"></script>
+</body>
+</html>
