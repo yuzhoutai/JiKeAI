@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>集客AI - AI视频</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body data-page="video" class="video-page">
+  <header class="sub-header glass-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">JK</div>
+        <div class="brand-text"><strong>集客AI</strong><span>Every Marketer's AI</span></div>
+      </a>
+      <nav class="nav dark-nav">
+        <a data-nav="home" href="index.html">首页</a>
+        <a data-nav="workflow" href="workflow.html">AI工作流</a>
+        <a data-nav="video" href="video.html">AI视频</a>
+        <a data-nav="modeling" href="modeling.html">AI对话</a>
+        <a data-nav="enterprise" href="enterprise.html">企业定制</a>
+        <a data-nav="contact" href="contact.html">联系我们</a>
+      </nav>
+      <div class="nav-right">
+        <div class="pill"><span class="coin-dot">◉</span> 161 <strong>| VIP</strong></div>
+        <div class="pill">wx133467...</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="video-studio">
+    <div class="video-studio__toast" data-video-toast hidden>已为你切换到 即梦 2.0</div>
+
+    <aside class="video-sidebar">
+      <div class="video-sidebar__section">
+        <h2>AI 视频控制台</h2>
+      </div>
+
+      <div class="video-sidebar__section">
+        <div class="video-label">选择视频类型</div>
+        <div class="video-select" data-video-type-select>
+          <button class="video-select__trigger" type="button" data-video-type-trigger aria-expanded="false">
+            <span data-video-type-value>单图视频</span>
+          </button>
+          <div class="video-select__menu" data-video-type-menu hidden>
+            <button class="video-select__option is-selected" type="button" data-video-type="single">单图视频</button>
+            <button class="video-select__option" type="button" data-video-type="double">首尾帧视频</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-sidebar__section">
+        <div class="video-label" data-upload-title>上传底图（必填）</div>
+        <div class="video-upload-grid" data-upload-grid>
+          <button class="video-upload-card" type="button" data-upload-button>
+            <input class="video-upload-card__input" type="file" accept="image/*" hidden>
+            <span class="video-upload-card__plus">+</span>
+            <strong data-upload-primary-label>上传主图</strong>
+            <span data-upload-primary-tip>请上传高清的图片，清晰度会影响最终效果</span>
+            <img class="video-upload-card__preview" alt="上传预览" hidden>
+          </button>
+        </div>
+      </div>
+
+      <div class="video-sidebar__section">
+        <div class="video-label">模型类型：</div>
+        <div class="video-chip-group video-chip-group--models">
+          <button class="video-chip" type="button" data-video-model>即梦 1.0</button>
+          <button class="video-chip is-active" type="button" data-video-model>即梦 2.0</button>
+        </div>
+        <p class="video-helper-text">即梦 2.0：高清画质，支持更稳定的镜头过渡与画面表现</p>
+      </div>
+
+      <div class="video-sidebar__section">
+        <div class="video-label video-label--between">
+          <span>输入描述：</span>
+          <span>0/500</span>
+        </div>
+        <textarea class="video-textarea" data-video-description placeholder="请使用中文描述，镜头运动、主体关系和画面氛围越清晰，最终效果越稳定。"></textarea>
+      </div>
+
+      <div class="video-sidebar__section">
+        <div class="video-label">视频时长：</div>
+        <div class="video-chip-group" data-video-toggle-group="duration">
+          <button class="video-chip is-active wide" type="button">8S</button>
+          <button class="video-chip wide" type="button">10S</button>
+          <button class="video-chip wide" type="button">15S</button>
+        </div>
+      </div>
+
+      <div class="video-sidebar__section">
+        <div class="video-label">视频比例：</div>
+        <div class="video-chip-group" data-video-toggle-group="ratio">
+          <button class="video-chip is-active wide" type="button">16:9</button>
+          <button class="video-chip wide" type="button">9:16</button>
+        </div>
+      </div>
+
+      <div class="video-sidebar__footer">
+        <button class="video-submit" type="button">开始生成视频</button>
+      </div>
+    </aside>
+
+    <section class="video-content">
+      <div class="video-content__head">
+        <div>
+          <h1>专业视频渲染引擎</h1>
+          <p>集客AI 视频全新升级，更符合行业的专业运镜</p>
+        </div>
+      </div>
+
+      <div class="video-tabs" data-video-tabs>
+        <button class="video-tab is-active" type="button">建筑外景运镜</button>
+        <button class="video-tab" type="button">室内空间运镜</button>
+        <button class="video-tab" type="button">首尾帧/创意运镜</button>
+      </div>
+
+      <div class="video-card-grid">
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-1/840/620" alt="建筑平移">
+          <div class="video-scene-card__body">
+            <h3>建筑平移</h3>
+            <p>镜头逐渐向左平移，光影在变化，匀速</p>
+            <span>适用：立面展示 / 街景</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-2/840/620" alt="建筑鸟瞰环绕">
+          <div class="video-scene-card__body">
+            <h3>建筑鸟瞰环绕</h3>
+            <p>俯拍建筑，环绕拍摄，人来人往，车来车往，光影变化，云朵飘动</p>
+            <span>适用：场地分析 / 规划</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-3/840/620" alt="建筑从整体到局部">
+          <div class="video-scene-card__body">
+            <h3>建筑从整体到局部</h3>
+            <p>镜头逐渐下降，停留在建筑的主入口处</p>
+            <span>适用：入口节点 / 定位</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-4/840/620" alt="建筑从室外到室内">
+          <div class="video-scene-card__body">
+            <h3>建筑从室外到室内</h3>
+            <p>镜头向主入口推进，入口玻璃门打开，进入室内</p>
+            <span>适用：空间过渡 / 贯通</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-5/840/620" alt="希区柯克推进">
+          <div class="video-scene-card__body">
+            <h3>希区柯克推进</h3>
+            <p>镜头快速在建筑上空沿着左下侧飞向右上侧方向快速推进</p>
+            <span>适用：视觉冲击 / 概念</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-6/840/620" alt="中心环绕">
+          <div class="video-scene-card__body">
+            <h3>中心环绕</h3>
+            <p>镜头沿着画面中间的主要建筑环绕</p>
+            <span>适用：单体建筑 / 雕塑</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-7/840/620" alt="起重机">
+          <div class="video-scene-card__body">
+            <h3>起重机</h3>
+            <p>FPV镜头，镜头从下往上快速推进，最后俯瞰写字楼</p>
+            <span>适用：高层塔楼 / 气势</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-8/840/620" alt="超级拉远">
+          <div class="video-scene-card__body">
+            <h3>超级拉远</h3>
+            <p>镜头拉远，展示城市总体规划图，再到卫星地图</p>
+            <span>适用：城市区位 / 宏观</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-9/840/620" alt="延时摄影">
+          <div class="video-scene-card__body">
+            <h3>延时摄影</h3>
+            <p>镜头固定，从天亮一直拍到天黑，用延时摄影</p>
+            <span>适用：光影分析 / 氛围</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-10/840/620" alt="俯瞰+环绕">
+          <div class="video-scene-card__body">
+            <h3>俯瞰 + 环绕</h3>
+            <p>镜头从高空俯视建筑，捕捉建筑的顶部全貌后，缓慢旋转，镜头以建筑为中心</p>
+            <span>适用：屋顶结构 / 布局</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-11/840/620" alt="推进+仰拍">
+          <div class="video-scene-card__body">
+            <h3>推进 + 仰拍</h3>
+            <p>镜头先靠近大楼，从地面开始拍地基，然后切换到垂直向上拍，贴着大楼外面往上拍</p>
+            <span>适用：建筑高度 / 仰视</span>
+          </div>
+        </article>
+        <article class="video-scene-card">
+          <img src="https://picsum.photos/seed/video-scene-12/840/620" alt="拉远">
+          <div class="video-scene-card__body">
+            <h3>拉远</h3>
+            <p>镜头逐渐推向远景，展现整个建筑，天空的清新蓝色背景增强视觉效果</p>
+            <span>适用：全貌展示 / 结尾</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/common.js"></script>
+  <script src="assets/video-page.js"></script>
+</body>
+</html>
