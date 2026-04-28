@@ -92,7 +92,12 @@
   };
 
   const escapeHtml = function (value) {
-    return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   };
 
   const initials = function (name) {
@@ -125,7 +130,15 @@
   };
 
   const currentAssignment = function () {
-    return store.assignments.find(function (item) { return item.id === state.selectedAssignmentId; }) || null;
+    return store.assignments.find(function (item) {
+      return item.id === state.selectedAssignmentId;
+    }) || null;
+  };
+
+  const enterpriseActive = function () {
+    return cards.some(function (card) {
+      return card.classList.contains('is-active') && card.dataset.workflowName === ENTERPRISE_NAME;
+    });
   };
 
   const getTeacherStats = function () {
@@ -143,7 +156,7 @@
       { icon: '师', label: '当前所属老师', value: store.studentProfile.joined ? store.studentProfile.teacherName : '--', foot: '负责审批与反馈' },
       { icon: '组', label: '所属团队', value: store.studentProfile.joined ? store.studentProfile.teamName : '--', foot: '用于课堂协作与作业归档' },
       { icon: '交', label: '已提交作业数', value: mine.length, foot: '当前账号累计提交' },
-      { icon: '待', label: '待审批数', value: mine.filter(function (item) { return item.status === 'pending'; }).length, foot: '等待老师查看' },
+      { icon: '审', label: '待审批数', value: mine.filter(function (item) { return item.status === 'pending'; }).length, foot: '等待老师查看' },
       { icon: '退', label: '被退回数', value: mine.filter(function (item) { return item.status === 'revise'; }).length, foot: '建议优先处理' }
     ];
   };
@@ -157,30 +170,36 @@
   const filteredAssignments = function () {
     const query = state.teacherSearch.trim().toLowerCase();
     let items = store.assignments.slice();
-    if (state.teacherFilter !== 'all') items = items.filter(function (item) { return item.status === state.teacherFilter; });
+
+    if (state.teacherFilter !== 'all') {
+      items = items.filter(function (item) {
+        return item.status === state.teacherFilter;
+      });
+    }
+
     if (query) {
       items = items.filter(function (item) {
         return item.studentName.toLowerCase().indexOf(query) > -1 || item.title.toLowerCase().indexOf(query) > -1;
       });
     }
+
     items.sort(function (a, b) {
       if (state.teacherSort === 'earliest') return a.submittedAt.localeCompare(b.submittedAt);
       if (state.teacherSort === 'student') return a.studentName.localeCompare(b.studentName, 'zh-Hans-CN');
       return b.submittedAt.localeCompare(a.submittedAt);
     });
+
     return items;
   };
 
   const updateShellVisibility = function () {
-    const active = cards.find(function (card) {
-      return card.classList.contains('is-active') && card.dataset.workflowName === ENTERPRISE_NAME;
-    });
-    if (active) {
+    if (enterpriseActive()) {
       chatShell.hidden = true;
       chatShell.style.display = 'none';
       workspace.hidden = false;
       workspace.style.display = '';
       titleDisplay.textContent = ENTERPRISE_NAME;
+
       if (state.view === 'teacher') {
         title.innerHTML = '教师工作台';
         statusText.textContent = '教师协作空间已就绪';
@@ -191,13 +210,14 @@
         title.innerHTML = '师生协作作业管理系统';
         statusText.textContent = '身份选择待确认';
       }
-    } else {
-      chatShell.hidden = false;
-      chatShell.style.display = '';
-      workspace.hidden = true;
-      workspace.style.display = 'none';
-      state.view = 'select';
+      return;
     }
+
+    chatShell.hidden = false;
+    chatShell.style.display = '';
+    workspace.hidden = true;
+    workspace.style.display = 'none';
+    state.view = 'select';
   };
 
   const renderSelectView = function () {
@@ -210,8 +230,9 @@
 
   const renderMembers = function () {
     if (!store.members.length) {
-      return '<div class="workflow-empty"><div class="workflow-empty__icon">组</div><strong>老师端暂无学生</strong><p>当前团队里还没有学生。你可以先复制邀请码，或者点击邀请学生，快速把课堂成员拉进来。</p></div>';
+      return '<div class="workflow-empty"><div class="workflow-empty__icon">组</div><strong>老师端暂时无学生</strong><p>当前团队里还没有学生。你可以先复制邀请码，或者点击邀请学生，快速把课堂成员拉进来。</p></div>';
     }
+
     return '<div class="workflow-list">' + store.members.map(function (member) {
       return '<article class="workflow-member-card"><div class="workflow-list-avatar">' + escapeHtml(initials(member.name)) + '</div><div class="workflow-list-name"><strong>' + escapeHtml(member.name) + '</strong><span>学号 ' + escapeHtml(member.studentId) + ' · 加入于 ' + escapeHtml(member.joinedAt) + '</span></div><div class="workflow-inline-actions"><span class="workflow-tag ' + (member.status === '在组' ? 'is-approved' : 'is-pending') + '">' + escapeHtml(member.status) + '</span><button class="workflow-inline-btn" type="button" data-member-remove="' + escapeHtml(member.id) + '">移出团队</button></div></article>';
     }).join('') + '</div>';
@@ -220,8 +241,9 @@
   const renderTeacherAssignments = function () {
     const items = filteredAssignments();
     if (!items.length) {
-      return '<div class="workflow-empty"><div class="workflow-empty__icon">审</div><strong>老师端暂无作业</strong><p>当前筛选条件下没有学生作业。你可以切换状态、清空搜索，或者等待学生端提交新的图片作业。</p></div>';
+      return '<div class="workflow-empty"><div class="workflow-empty__icon">审</div><strong>老师端暂时无作业</strong><p>当前筛选条件下没有学生作业。你可以切换状态、清空搜索，或者等待学生端提交新的图片作业。</p></div>';
     }
+
     return '<div class="workflow-assignment-list">' + items.map(function (item) {
       return '<article class="workflow-assignment-card"><img class="workflow-assignment-card__thumb" src="' + escapeHtml(item.imageUrl) + '" alt="' + escapeHtml(item.title) + '"><div><div class="workflow-assignment-card__title"><strong>' + escapeHtml(item.title) + '</strong><span>' + escapeHtml(item.studentName) + ' · 提交于 ' + escapeHtml(item.submittedAt) + '</span></div><div class="workflow-assignment-card__meta">' + escapeHtml(item.description) + '</div></div><div class="workflow-assignment-card__actions">' + statusTag(item.status) + '<button class="workflow-primary-btn" type="button" data-assignment-detail="' + escapeHtml(item.id) + '">查看详情</button></div></article>';
     }).join('') + '</div>';
@@ -229,12 +251,14 @@
 
   const renderInviteModal = function () {
     if (!state.inviteOpen) return '';
+
     return '<div class="workflow-modal" data-invite-modal><div class="workflow-modal__panel"><div class="workflow-modal__header"><div><h3>邀请学生加入团队</h3><div class="workflow-modal__meta"><span>把邀请码发给学生，或在课堂投屏展示以下加入路径。</span></div></div><button class="workflow-ghost-btn" type="button" data-close-invite>关闭</button></div><div class="workflow-panel"><div class="workflow-meta-item"><span>团队邀请码</span><strong>' + escapeHtml(store.team.inviteCode) + '</strong></div><div class="workflow-meta-item" style="margin-top:12px;"><span>加入提示</span><strong>学生端输入邀请码后，即可绑定到 ' + escapeHtml(store.team.teacher) + ' 老师名下。</strong></div><div class="workflow-team-actions" style="margin-top:16px;"><button class="workflow-secondary-btn" type="button" data-copy-invite>复制邀请码</button><button class="workflow-primary-btn" type="button" data-close-invite>我知道了</button></div></div></div></div>';
   };
 
   const renderTeacherDetailModal = function () {
     const assignment = currentAssignment();
     if (!assignment) return '';
+
     return '<div class="workflow-modal" data-assignment-modal><div class="workflow-modal__panel"><div class="workflow-modal__header"><div><h3>作业详情</h3><div class="workflow-modal__meta"><span>' + escapeHtml(assignment.studentName) + '</span><span>' + escapeHtml(assignment.title) + '</span><span>提交时间 ' + escapeHtml(assignment.submittedAt) + '</span></div></div><button class="workflow-ghost-btn" type="button" data-close-detail>关闭</button></div><div class="workflow-modal__section"><h4>作业说明</h4><div class="workflow-panel__subtext">' + escapeHtml(assignment.description) + '</div></div><div class="workflow-modal__section"><h4>图片大图预览</h4><div class="workflow-modal__preview"><img src="' + escapeHtml(assignment.imageUrl) + '" alt="' + escapeHtml(assignment.title) + '"></div></div><div class="workflow-modal__section"><h4>历史审批记录</h4><div class="workflow-history">' + (assignment.history.length ? assignment.history.map(function (record) { return '<div class="workflow-history__item"><strong>' + escapeHtml(record.label) + ' · ' + escapeHtml(record.time) + '</strong><p>' + escapeHtml(record.detail) + '</p></div>'; }).join('') : '<div class="workflow-empty"><div class="workflow-empty__icon">记</div><strong>暂无审批记录</strong><p>你可以在下方写留言后保存，或者直接完成审批。</p></div>') + '</div></div><div class="workflow-modal__section"><h4>教师留言</h4><textarea class="workflow-textarea" data-detail-comment placeholder="写下本次审批意见或修改建议">' + escapeHtml(assignment.teacherComment || '') + '</textarea></div><div class="workflow-modal__footer"><button class="workflow-secondary-btn" type="button" data-save-comment="' + escapeHtml(assignment.id) + '">保存留言</button><div class="workflow-modal__actions"><button class="workflow-secondary-btn" type="button" data-mark-revise="' + escapeHtml(assignment.id) + '">退回修改</button><button class="workflow-primary-btn" type="button" data-mark-approved="' + escapeHtml(assignment.id) + '">通过</button></div></div></div></div>';
   };
 
@@ -254,6 +278,7 @@
     if (store.studentProfile.joined) {
       return '<div class="workflow-joined-card"><strong>' + escapeHtml(store.studentProfile.teacherName) + ' · ' + escapeHtml(store.studentProfile.teamName) + '</strong><div class="workflow-record__meta">加入时间 ' + escapeHtml(store.studentProfile.joinedAt) + ' · 邀请码 ' + escapeHtml(store.studentProfile.inviteCode) + '</div></div>';
     }
+
     return '<div class="workflow-join-card"><div class="workflow-empty__icon">组</div><strong>学生端未加入团队</strong><p>输入老师发给你的邀请码，即可绑定所属团队并开始提交作业。</p><div class="workflow-record-list"><input class="workflow-input" type="text" data-student-join-code placeholder="请输入邀请码，例如 JK-2026-1688" value="' + escapeHtml(state.studentJoinCode) + '"><button class="workflow-primary-btn" type="button" data-student-join>加入团队</button></div></div>';
   };
 
@@ -261,14 +286,16 @@
     if (!state.studentDraft.imageUrl) {
       return '<div class="workflow-empty-upload"><div class="workflow-empty-upload__media">图片</div><div class="workflow-upload-hint">未上传图片时，会显示这里的占位状态。</div></div>';
     }
+
     return '<div class="workflow-upload-preview"><img src="' + escapeHtml(state.studentDraft.imageUrl) + '" alt="作业预览"><div><strong>' + escapeHtml(state.studentDraft.fileName || '本地图片预览') + '</strong><div class="workflow-upload-hint">图片已载入前端本地状态，提交后会直接写入作业记录。</div><div class="workflow-upload-actions"><button class="workflow-inline-btn" type="button" data-clear-upload>移除图片</button></div></div></div>';
   };
 
   const renderStudentAssignments = function () {
     const mine = store.assignments.filter(function (item) { return item.studentId === store.studentProfile.id; }).sort(function (a, b) { return b.submittedAt.localeCompare(a.submittedAt); });
     if (!mine.length) {
-      return '<div class="workflow-empty"><div class="workflow-empty__icon">作</div><strong>学生端暂无作业记录</strong><p>加入老师团队并完成第一次提交后，这里会展示你的作业状态、老师留言和重新提交入口。</p></div>';
+      return '<div class="workflow-empty"><div class="workflow-empty__icon">作</div><strong>学生端暂时无作业记录</strong><p>加入老师团队并完成第一次提交后，这里会展示你的作业状态、老师留言和重新提交入口。</p></div>';
     }
+
     return '<div class="workflow-record-list">' + mine.map(function (item) {
       return '<article class="workflow-record-card"><div><div class="workflow-record-card__title"><strong>' + escapeHtml(item.title) + '</strong><span>提交时间 ' + escapeHtml(item.submittedAt) + '</span></div><div class="workflow-record-card__feedback">老师留言：' + escapeHtml(item.teacherComment || '老师暂未留言') + '</div></div><div class="workflow-record-card__actions">' + statusTag(item.status) + '<button class="workflow-inline-btn" type="button" data-student-detail="' + escapeHtml(item.id) + '">查看详情</button>' + (item.status === 'revise' ? '<button class="workflow-primary-btn" type="button" data-student-resubmit="' + escapeHtml(item.id) + '">重新提交</button>' : '') + '</div></article>';
     }).join('') + '</div>';
@@ -277,6 +304,7 @@
   const renderStudentDetailModal = function () {
     const assignment = currentAssignment();
     if (!assignment) return '';
+
     return '<div class="workflow-modal" data-assignment-modal><div class="workflow-modal__panel"><div class="workflow-modal__header"><div><h3>我的作业详情</h3><div class="workflow-modal__meta"><span>' + escapeHtml(assignment.title) + '</span><span>' + escapeHtml(statusMap[assignment.status].label) + '</span><span>提交时间 ' + escapeHtml(assignment.submittedAt) + '</span></div></div><button class="workflow-ghost-btn" type="button" data-close-detail>关闭</button></div><div class="workflow-modal__section"><h4>作业说明</h4><div class="workflow-panel__subtext">' + escapeHtml(assignment.description) + '</div></div><div class="workflow-modal__section"><h4>图片预览</h4><div class="workflow-modal__preview"><img src="' + escapeHtml(assignment.imageUrl) + '" alt="' + escapeHtml(assignment.title) + '"></div></div><div class="workflow-modal__section"><h4>老师留言</h4><div class="workflow-panel__subtext">' + escapeHtml(assignment.teacherComment || '老师暂未留言') + '</div></div><div class="workflow-modal__section"><h4>审批记录</h4><div class="workflow-history">' + (assignment.history.length ? assignment.history.map(function (record) { return '<div class="workflow-history__item"><strong>' + escapeHtml(record.label) + ' · ' + escapeHtml(record.time) + '</strong><p>' + escapeHtml(record.detail) + '</p></div>'; }).join('') : '<div class="workflow-empty"><div class="workflow-empty__icon">记</div><strong>暂无审批记录</strong><p>老师审批后，这里会同步显示最新结果。</p></div>') + '</div></div><div class="workflow-modal__footer"><button class="workflow-secondary-btn" type="button" data-close-detail>关闭</button>' + (assignment.status === 'revise' ? '<button class="workflow-primary-btn" type="button" data-student-resubmit="' + escapeHtml(assignment.id) + '">带回表单重新提交</button>' : '') + '</div></div></div>';
   };
 
@@ -296,16 +324,23 @@
   const render = function () {
     updateShellVisibility();
     if (workspace.hidden) return;
-    if (state.view === 'teacher') renderTeacherView();
-    else if (state.view === 'student') renderStudentView();
-    else renderSelectView();
+
+    if (state.view === 'teacher') {
+      renderTeacherView();
+    } else if (state.view === 'student') {
+      renderStudentView();
+    } else {
+      renderSelectView();
+    }
   };
 
   const saveComment = function (assignmentId, status) {
     const assignment = store.assignments.find(function (item) { return item.id === assignmentId; });
     const textarea = workspace.querySelector('[data-detail-comment]');
     if (!assignment || !textarea) return;
+
     assignment.teacherComment = textarea.value.trim();
+
     if (status) {
       assignment.status = status;
       assignment.history.unshift({
@@ -316,25 +351,34 @@
       });
       showToast(status === 'approved' ? '已通过作业并同步状态' : '已退回作业并标记为需修改');
     } else {
-      assignment.history.unshift({ type: 'comment', label: '保存留言', detail: assignment.teacherComment || '老师更新了留言。', time: nowText() });
+      assignment.history.unshift({
+        type: 'comment',
+        label: '保存留言',
+        detail: assignment.teacherComment || '老师更新了留言。',
+        time: nowText()
+      });
       showToast('教师留言已保存');
     }
+
     render();
     state.selectedAssignmentId = assignmentId;
     render();
   };
 
   const joinTeam = function () {
-    if (!state.studentJoinCode.trim()) return showToast('先输入邀请码');
+    if (!state.studentJoinCode.trim()) return showToast('请先输入邀请码');
     if (state.studentJoinCode.trim().toUpperCase() !== store.team.inviteCode) return showToast('邀请码不正确，请检查后再试');
+
     store.studentProfile.joined = true;
     store.studentProfile.teacherName = store.team.teacher;
     store.studentProfile.teamName = store.team.name;
     store.studentProfile.inviteCode = store.team.inviteCode;
     store.studentProfile.joinedAt = nowText();
+
     if (!store.members.some(function (item) { return item.id === store.studentProfile.id; })) {
       store.members.unshift({ id: store.studentProfile.id, name: store.studentProfile.name, studentId: '20239999', joinedAt: store.studentProfile.joinedAt, status: '在组' });
     }
+
     state.studentJoinCode = '';
     showToast('已加入老师团队');
     render();
@@ -348,7 +392,9 @@
     if (!store.studentProfile.joined) return showToast('请先加入老师团队');
     if (!state.studentDraft.title.trim() || !state.studentDraft.description.trim()) return showToast('请先补全作业标题和说明');
     if (!state.studentDraft.imageUrl) return showToast('请先上传图片作业');
+
     const now = nowText();
+
     if (state.studentDraft.editingId) {
       const assignment = store.assignments.find(function (item) { return item.id === state.studentDraft.editingId; });
       if (assignment) {
@@ -376,6 +422,7 @@
       });
       showToast('作业提交成功');
     }
+
     resetDraft();
     render();
   };
@@ -419,7 +466,11 @@
     if (event.target.closest('[data-copy-invite]')) {
       const code = store.team.inviteCode;
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(code).then(function () { showToast('邀请码已复制'); }).catch(function () { showToast('邀请码：' + code); });
+        navigator.clipboard.writeText(code).then(function () {
+          showToast('邀请码已复制');
+        }).catch(function () {
+          showToast('邀请码：' + code);
+        });
       } else {
         showToast('邀请码：' + code);
       }
@@ -491,6 +542,7 @@
     if (resubmitBtn) {
       const assignment = store.assignments.find(function (item) { return item.id === resubmitBtn.dataset.studentResubmit; });
       if (!assignment) return;
+
       state.studentDraft.title = assignment.title;
       state.studentDraft.description = assignment.description;
       state.studentDraft.imageUrl = assignment.imageUrl;
@@ -508,14 +560,17 @@
       render();
       return;
     }
+
     if (event.target.matches('[data-student-join-code]')) {
       state.studentJoinCode = event.target.value;
       return;
     }
+
     if (event.target.matches('[data-student-title]')) {
       state.studentDraft.title = event.target.value;
       return;
     }
+
     if (event.target.matches('[data-student-description]')) {
       state.studentDraft.description = event.target.value;
     }
@@ -527,14 +582,17 @@
       render();
       return;
     }
+
     if (event.target.matches('[data-teacher-sort]')) {
       state.teacherSort = event.target.value;
       render();
       return;
     }
+
     if (event.target.matches('[data-student-file]')) {
       const file = event.target.files && event.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
       reader.onload = function (loadEvent) {
         state.studentDraft.imageUrl = loadEvent.target.result;

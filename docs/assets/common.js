@@ -14,6 +14,166 @@
     });
   }
 
+  const setupAccountWidgets = function () {
+    const navRight = document.querySelector('.nav-right');
+    if (!navRight || navRight.dataset.accountReady === 'true') return;
+
+    const pills = navRight.querySelectorAll('.pill');
+    const coinPill = pills[0];
+    const userPill = pills[1];
+    if (!coinPill || !userPill) return;
+
+    const userId = '135930191007232';
+    const userName = 'wx135930191007232';
+    const shortName = 'wx135930...';
+    const coinCount = (coinPill.textContent.match(/\d+/) || ['120'])[0];
+
+    navRight.dataset.accountReady = 'true';
+    coinPill.classList.add('app-coin-pill');
+    coinPill.setAttribute('role', 'button');
+    coinPill.setAttribute('tabindex', '0');
+    coinPill.innerHTML =
+      '<span class="coin-dot">◎</span>' +
+      '<span class="app-coin-count">' + coinCount + '</span>' +
+      '<span class="app-coin-split"></span>' +
+      '<span class="app-coin-vip">VIP</span>';
+
+    const userWrap = document.createElement('div');
+    userWrap.className = 'app-user-wrap';
+    userPill.parentNode.insertBefore(userWrap, userPill);
+    userWrap.appendChild(userPill);
+    userPill.classList.add('app-user-pill');
+    userPill.setAttribute('role', 'button');
+    userPill.setAttribute('tabindex', '0');
+    userPill.innerHTML = '<span class="app-avatar">集</span><span class="app-user-name">' + shortName + '</span>';
+
+    const menu = document.createElement('div');
+    menu.className = 'app-user-menu';
+    menu.innerHTML =
+      '<button type="button" data-account-action="profile"><span class="app-menu-icon">♡</span><span>个人中心</span></button>' +
+      '<button type="button" data-account-action="benefit"><span class="app-menu-icon">♔</span><span>桌面端权益</span><i class="app-menu-dot"></i></button>' +
+      '<button type="button" data-account-action="history"><span class="app-menu-icon">◇</span><span>生成历史</span></button>' +
+      '<button type="button" data-account-action="logout"><span class="app-menu-icon">↪</span><span>退出登录</span></button>';
+    userWrap.appendChild(menu);
+
+    const ensureModal = function (id, markup) {
+      let modal = document.getElementById(id);
+      if (modal) return modal;
+      modal = document.createElement('div');
+      modal.id = id;
+      modal.className = 'app-modal';
+      modal.setAttribute('aria-hidden', 'true');
+      modal.innerHTML = markup;
+      document.body.appendChild(modal);
+      return modal;
+    };
+
+    const profileModal = ensureModal('appProfileModal',
+      '<div class="app-modal__panel" role="dialog" aria-modal="true" aria-labelledby="appProfileTitle">' +
+        '<div class="app-modal__head"><h3 id="appProfileTitle">个人信息</h3><button class="app-modal__close" type="button" data-modal-close aria-label="关闭">×</button></div>' +
+        '<div class="app-modal__body">' +
+          '<div class="app-profile-avatar">集</div>' +
+          '<div class="app-field"><label>用户ID</label><div class="app-input-row"><div class="app-readonly">' + userId + '</div><button class="app-copy-btn" type="button" data-copy-user aria-label="复制用户ID">⧉</button></div></div>' +
+          '<div class="app-field"><label>昵称</label><div class="app-readonly">' + userName + '</div></div>' +
+          '<div class="app-field"><label>手机号</label><button class="app-bind-btn" type="button">去绑定</button></div>' +
+          '<div class="app-field"><span class="app-vip-title">VIP信息</span><div class="app-vip-card"><div class="app-vip-line"><span>会员类型:</span><strong>普通用户</strong></div><div class="app-vip-line"><span>剩余金币:</span><strong class="app-vip-coin">' + coinCount + ' <span class="coin-dot">◎</span></strong></div></div></div>' +
+        '</div>' +
+        '<div class="app-modal__foot"><button class="app-ghost-btn" type="button" data-modal-close>取消</button><button class="app-primary-btn" type="button" data-modal-close>保存</button></div>' +
+      '</div>');
+
+    const coinModal = ensureModal('appCoinModal',
+      '<div class="app-modal__panel app-coin-panel" role="dialog" aria-modal="true" aria-labelledby="appCoinTitle">' +
+        '<div class="app-modal__head"><h3 id="appCoinTitle">金币详情</h3><button class="app-modal__close" type="button" data-modal-close aria-label="关闭">×</button></div>' +
+        '<div class="app-modal__body">' +
+          '<section class="app-account-card">' +
+            '<div class="app-account-main"><span class="app-avatar">集</span><div><strong>' + userName + '</strong><span>免费用户</span></div></div>' +
+            '<div class="app-account-actions"><button class="app-small-btn" type="button">金币详情</button><button class="app-small-btn" type="button">购买金币</button></div>' +
+            '<div class="app-account-stats"><div><span>会员类型</span><strong>免费用户</strong></div><div><span>到期时间</span><strong>-</strong></div><div><span>剩余金币</span><strong class="app-vip-coin">' + coinCount + ' <span class="coin-dot">◎</span></strong></div></div>' +
+          '</section>' +
+          '<h2 class="app-coin-title">年会员限时5折，折合24.9元/月，1周后恢复原价</h2>' +
+          '<div class="app-plan-tabs"><button class="is-active" type="button">按年购买</button><button type="button">单月购买</button><button type="button">永久会员</button></div>' +
+          '<div class="app-plan-grid">' +
+            '<article class="app-plan-card"><h4>免费</h4><div class="app-price">￥<strong>0</strong><span>/ 每年</span></div><button class="app-ghost-btn" type="button">当前套餐</button><ul><li>每天赠送金币</li><li>图片有水印</li><li>无其他权益</li></ul></article>' +
+            '<article class="app-plan-card"><h4>普通会员</h4><div class="app-price">￥<strong>299</strong><span>/ 每年</span></div><button class="app-primary-btn" type="button">立即订阅</button><ul><li>每月累计可获得 1,900 金币</li><li>限时赠送桌面端 1 年激活码</li><li>支持 2k/3k/4k 生图</li></ul></article>' +
+            '<article class="app-plan-card"><h4>超级会员</h4><div class="app-price">￥<strong>599</strong><span>/ 每年</span></div><button class="app-primary-btn" type="button">立即订阅</button><ul><li>每月累计可获得 5,000 金币</li><li>限时赠送桌面端 1 年激活码</li><li>更多视频与 3D 模型额度</li></ul></article>' +
+          '</div>' +
+        '</div>' +
+      '</div>');
+
+    const openModal = function (modal) {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      const close = modal.querySelector('[data-modal-close]');
+      if (close) close.focus();
+    };
+
+    const closeModal = function (modal) {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+
+    document.addEventListener('click', function (event) {
+      const modal = event.target.closest('.app-modal');
+      if (!modal) return;
+      if (event.target === modal || event.target.closest('[data-modal-close]')) {
+        closeModal(modal);
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        document.querySelectorAll('.app-modal.is-open').forEach(closeModal);
+        userWrap.classList.remove('is-open');
+      }
+    });
+
+    userPill.addEventListener('click', function () {
+      userWrap.classList.toggle('is-open');
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!userWrap.contains(event.target)) userWrap.classList.remove('is-open');
+    });
+
+    menu.addEventListener('click', function (event) {
+      const action = event.target.closest('[data-account-action]');
+      if (!action) return;
+      userWrap.classList.remove('is-open');
+      if (action.dataset.accountAction === 'profile') openModal(profileModal);
+      if (action.dataset.accountAction === 'benefit') openModal(coinModal);
+      if (action.dataset.accountAction === 'history') window.location.href = 'workflow.html';
+      if (action.dataset.accountAction === 'logout') alert('已退出登录');
+    });
+
+    coinPill.addEventListener('click', function () {
+      openModal(coinModal);
+    });
+
+    [coinPill, userPill].forEach(function (trigger) {
+      trigger.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          trigger.click();
+        }
+      });
+    });
+
+    const copyButton = profileModal.querySelector('[data-copy-user]');
+    if (copyButton) {
+      copyButton.addEventListener('click', function () {
+        if (navigator.clipboard) navigator.clipboard.writeText(userId);
+        copyButton.textContent = '✓';
+        window.setTimeout(function () {
+          copyButton.textContent = '⧉';
+        }, 1200);
+      });
+    }
+  };
+
+  setupAccountWidgets();
+
   const homeForm = document.querySelector('[data-home-form]');
   const homePrompt = document.querySelector('[data-home-prompt]');
   const storeHomePrompt = function () {
@@ -638,8 +798,214 @@
   const workflowTitle = document.querySelector('[data-workflow-title]');
   const composer = document.querySelector('[data-workflow-composer]');
   const workflowChatShell = document.querySelector('[data-workflow-chat-shell]');
+  const workflowToolPages = document.querySelector('[data-workflow-tool-pages]');
+  const workflowDetail = document.querySelector('[data-workflow-design-detail]');
+  const workflowPanels = document.querySelectorAll('[data-workflow-panel]');
+  const workflowStatusText = document.querySelector('[data-workflow-status-text]');
 
   if (!cards.length || !workflowTitle || !composer) return;
+
+  const detailState = {
+    category: '',
+    prompt: '',
+    title: '',
+    description: ''
+  };
+
+  const escapeHtml = function (value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  };
+
+  const categoryExamples = {
+    '室内设计': [
+      {
+        title: '暖灰石材客厅',
+        before: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '开放式收纳优化',
+        before: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '隐藏灯带氛围',
+        before: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=520&q=80'
+      }
+    ],
+    '建筑设计': [
+      {
+        title: '一键改成玻璃幕墙',
+        before: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '深褐色的高级感',
+        before: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '五彩缤纷的外立面',
+        before: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=520&q=80'
+      }
+    ],
+    '产品设计': [
+      {
+        title: '极简科技外观',
+        before: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '织物面板质感',
+        before: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '场景化产品渲染',
+        before: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=520&q=80'
+      }
+    ],
+    '视觉传达': [
+      {
+        title: '发布会主视觉升级',
+        before: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '品牌物料延展',
+        before: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '社媒封面系列',
+        before: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=520&q=80'
+      }
+    ],
+    '数字媒体': [
+      {
+        title: '短视频封面强化',
+        before: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '霓虹栏目包装',
+        before: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=520&q=80'
+      },
+      {
+        title: '分镜氛围生成',
+        before: 'https://images.unsplash.com/photo-1535016120720-40c646be5580?auto=format&fit=crop&w=520&q=80',
+        after: 'https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=520&q=80'
+      }
+    ]
+  };
+
+  const detailCopy = {
+    '室内设计': { upload: '输入空间描述', hint: '请描述户型、材质、灯光、收纳与软装方向，细节越清楚效果越准。', center: '拖动底图到此处或点击上传空间图片', template: '或者尝试以下室内模板图片', action: '开始生成(1金币)' },
+    '建筑设计': { upload: '上传建筑底图', hint: '请上传清晰的建筑外观、草图或场地图片，便于生成立面与体块方案。', center: '拖动底图到此处或点击上传建筑图片', template: '或者尝试以下建筑模板图片', action: '开始渲染(1金币)' },
+    '产品设计': { upload: '上传产品草图', hint: '请上传产品线稿、竞品图或结构参考，便于生成外观与材质方向。', center: '拖动底图到此处或点击上传产品图片', template: '或者尝试以下产品模板图片', action: '开始生成(1金币)' },
+    '视觉传达': { upload: '上传视觉参考', hint: '请上传品牌、海报、KV 或活动参考图，便于生成版式与视觉延展。', center: '拖动底图到此处或点击上传视觉图片', template: '或者尝试以下视觉模板图片', action: '开始生成(1金币)' },
+    '数字媒体': { upload: '上传画面参考', hint: '请上传视频画面、封面或分镜参考，便于生成栏目视觉与传播素材。', center: '拖动底图到此处或点击上传媒体图片', template: '或者尝试以下媒体模板图片', action: '开始生成(1金币)' }
+  };
+
+  const templateImages = {
+    '室内设计': [
+      'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=420&q=80'
+    ],
+    '建筑设计': [
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=420&q=80'
+    ],
+    '产品设计': [
+      'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=420&q=80'
+    ],
+    '视觉传达': [
+      'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=420&q=80'
+    ],
+    '数字媒体': [
+      'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=420&q=80',
+      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=420&q=80'
+    ]
+  };
+
+  const renderDesignDetail = function () {
+    if (!workflowDetail) return;
+
+    const copy = detailCopy[detailState.category] || detailCopy['室内设计'];
+    const examples = categoryExamples[detailState.category] || categoryExamples['室内设计'];
+    const templates = templateImages[detailState.category] || templateImages['室内设计'];
+    const prompt = detailState.prompt || detailState.title;
+
+    workflowDetail.innerHTML =
+      '<div class="design-tool-shell">' +
+        '<aside class="design-tool-sidebar">' +
+          '<div class="design-tool-back-row"><button class="design-tool-back" type="button" data-design-back aria-label="返回">‹</button><h2>' + escapeHtml(detailState.title) + '</h2><button class="design-tool-tutorial" type="button">▷ 教程</button></div>' +
+          '<div class="design-tool-section"><h3><span>*</span> AI 模型选择</h3><button class="design-tool-select" type="button">FLUX2 全能模型 <span>⌄</span></button></div>' +
+          '<div class="design-tool-section"><h3>' + escapeHtml(copy.upload) + '</h3><label class="design-tool-upload"><input type="file" accept="image/*"><span class="design-tool-upload__plus">+</span><strong>' + escapeHtml(copy.upload) + '</strong><small>' + escapeHtml(copy.hint) + '</small></label></div>' +
+          '<div class="design-tool-section"><h3>方案描述：</h3><textarea class="design-tool-textarea" data-detail-prompt>' + escapeHtml(prompt) + '</textarea></div>' +
+          '<div class="design-tool-section"><h3>渲染张数：</h3><div class="design-tool-counts"><button class="is-active" type="button">1 张</button><button type="button"><span>会员可用</span>2 张</button><button type="button"><span>会员可用</span>3 张</button><button type="button"><span>会员可用</span>4 张</button></div></div>' +
+          '<label class="design-tool-toggle"><span><b>?</b> 参与优秀作品评选<small>入选优秀作品，可获赠200永久金币</small></span><input type="checkbox"><i></i></label>' +
+        '</aside>' +
+        '<main class="design-tool-stage">' +
+          '<div class="design-tool-drop"><div class="design-tool-drop__icon">▧＋</div><strong>' + escapeHtml(copy.center) + '</strong><span>' + escapeHtml(copy.template) + '</span><div class="design-tool-templates">' + templates.map(function (src, index) { return '<button type="button" data-template-index="' + index + '"><img src="' + escapeHtml(src) + '" alt="模板图片"></button>'; }).join('') + '</div></div>' +
+          '<div class="design-tool-actions"><button class="design-tool-light-btn" type="button">上传图片</button><button class="design-tool-primary-btn" type="button">' + escapeHtml(copy.action) + '</button></div>' +
+        '</main>' +
+        '<aside class="design-tool-gallery"><h2>优秀作品</h2><div class="design-tool-gallery__list">' + examples.map(function (item, index) { return '<button class="design-tool-example" type="button" data-example-index="' + index + '"><span><img src="' + escapeHtml(item.before) + '" alt="' + escapeHtml(item.title) + '改造前"><img src="' + escapeHtml(item.after) + '" alt="' + escapeHtml(item.title) + '改造后"></span><strong>' + escapeHtml(item.title) + '</strong></button>'; }).join('') + '</div></aside>' +
+      '</div>';
+  };
+
+  const openDesignDetail = function (card) {
+    if (!card || !workflowToolPages || !workflowDetail) return;
+
+    const activeCategory = document.querySelector('.workflow-category-card.is-active');
+    const mediaText = card.querySelector('.workflow-tool-card__media strong');
+    const title = card.querySelector('.workflow-tool-card__body h3');
+    const description = card.querySelector('.workflow-tool-card__body p');
+
+    detailState.category = activeCategory ? activeCategory.dataset.workflowName : '室内设计';
+    detailState.prompt = mediaText ? mediaText.textContent.trim() : (title ? title.textContent.trim() : '');
+    detailState.title = title ? title.textContent.trim() : detailState.category;
+    detailState.description = description ? description.textContent.trim() : '';
+
+    workflowToolPages.hidden = true;
+    workflowToolPages.style.display = 'none';
+    workflowDetail.hidden = false;
+    workflowDetail.style.display = '';
+    workflowChatShell.classList.add('is-design-detail');
+    workflowTitle.innerHTML = '<span data-workflow-display>' + escapeHtml(detailState.category + ' / ' + detailState.title) + '</span>';
+    if (workflowStatusText) workflowStatusText.textContent = detailState.description || (detailState.title + '已就绪');
+    renderDesignDetail();
+    window.scrollTo({ top: 0, left: 0 });
+  };
+
+  const closeDesignDetail = function () {
+    if (!workflowToolPages || !workflowDetail) return;
+
+    workflowDetail.hidden = true;
+    workflowDetail.style.display = 'none';
+    workflowToolPages.hidden = false;
+    workflowToolPages.style.display = '';
+    workflowChatShell.classList.remove('is-design-detail');
+    const activeCategory = document.querySelector('.workflow-category-card.is-active');
+    if (activeCategory) syncWorkflowShell(activeCategory);
+  };
 
   const syncWorkflowShell = function (card) {
     if (!card) return;
@@ -647,17 +1013,29 @@
     const nextName = card.dataset.workflowName || '';
     const mode = card.dataset.workflowMode || '';
 
-    workflowTitle.innerHTML = '<span data-workflow-display>' + nextName + '</span> 对话';
+    workflowTitle.innerHTML = '<span data-workflow-display>' + nextName + '</span>';
     composer.placeholder = card.dataset.workflowPlaceholder || composer.placeholder;
+
+    workflowPanels.forEach(function (panel) {
+      panel.classList.toggle('is-active', panel.dataset.workflowPanel === nextName);
+    });
+
+    if (workflowToolPages && workflowDetail) {
+      workflowDetail.hidden = true;
+      workflowDetail.style.display = 'none';
+      workflowToolPages.hidden = false;
+      workflowToolPages.style.display = '';
+      workflowChatShell.classList.remove('is-design-detail');
+    }
+
+    if (workflowStatusText && mode !== 'enterprise') {
+      workflowStatusText.textContent = nextName + '工作流已就绪';
+    }
 
     if (workflowChatShell) {
       const isEnterprise = mode === 'enterprise';
       workflowChatShell.hidden = isEnterprise;
       workflowChatShell.style.display = isEnterprise ? 'none' : '';
-    }
-
-    if (mode !== 'enterprise') {
-      composer.focus();
     }
   };
 
@@ -669,6 +1047,51 @@
       syncWorkflowShell(card);
     });
   });
+
+  if (workflowToolPages) {
+    workflowToolPages.addEventListener('click', function (event) {
+      const toolCard = event.target.closest('.workflow-tool-card');
+      if (toolCard) openDesignDetail(toolCard);
+    });
+
+    workflowToolPages.querySelectorAll('.workflow-tool-card').forEach(function (toolCard) {
+      toolCard.setAttribute('tabindex', '0');
+      toolCard.setAttribute('role', 'button');
+      toolCard.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openDesignDetail(toolCard);
+        }
+      });
+    });
+  }
+
+  if (workflowDetail) {
+    workflowDetail.addEventListener('click', function (event) {
+      if (event.target.closest('[data-design-back]')) {
+        closeDesignDetail();
+        return;
+      }
+
+      const example = event.target.closest('[data-example-index]');
+      if (example) {
+        const items = categoryExamples[detailState.category] || categoryExamples['室内设计'];
+        const selected = items[Number(example.dataset.exampleIndex)];
+        if (selected) {
+          detailState.prompt = selected.title;
+          renderDesignDetail();
+          const textarea = workflowDetail.querySelector('[data-detail-prompt]');
+          if (textarea) textarea.focus();
+        }
+      }
+    });
+
+    workflowDetail.addEventListener('input', function (event) {
+      if (event.target.matches('[data-detail-prompt]')) {
+        detailState.prompt = event.target.value;
+      }
+    });
+  }
 
   syncWorkflowShell(document.querySelector('.workflow-category-card.is-active'));
 })();
